@@ -1,0 +1,7 @@
+= proactive-fraud-detection-fuse
+
+Quick Start - How to Build 
+
+    mvn clean install
+
+    oc process -f .openshiftio/application.yaml | oc create -f -
