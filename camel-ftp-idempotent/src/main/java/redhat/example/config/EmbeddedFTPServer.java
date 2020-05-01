@@ -1,4 +1,4 @@
-package com.redhat.example.config;
+package redhat.example.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ftpserver.FtpServer;
@@ -11,9 +11,9 @@ import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.EventListener;
 
 import java.util.Arrays;
 
@@ -21,8 +21,9 @@ import java.util.Arrays;
 @Configuration
 public class EmbeddedFTPServer {
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void doSomethingAfterStartup() throws FtpException {
+    //@EventListener(ApplicationReadyEvent.class)
+    @Bean("ftpServer")
+    public FtpServer createFtpServer() throws FtpException {
 
         String filePath = System.getProperty("user.dir") + "/ftp";
         log.info("FTP Working Project Directory : {}", filePath);
@@ -31,7 +32,7 @@ public class EmbeddedFTPServer {
         UserManager userManager = userManagerFactory.createUserManager();
 
         BaseUser user = new BaseUser();
-        user.setAuthorities(Arrays.asList(new Authority[]{new ConcurrentLoginPermission(1, 1),
+        user.setAuthorities(Arrays.asList(new Authority[]{new ConcurrentLoginPermission(2, 2),
                 new WritePermission()}));
         user.setName("username");
         user.setPassword("admin");
@@ -47,6 +48,6 @@ public class EmbeddedFTPServer {
 
         FtpServer server = factory.createServer();
         server.start();
-
+        return server;
     }
 }
