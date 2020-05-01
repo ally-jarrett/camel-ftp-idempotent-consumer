@@ -1,1 +1,62 @@
+# ActiveMQ Embedded / Spring Boot / Apache Camel
 
+ActiveMQ is configured by default to run in embedded mode.
+
+### Configuration Files
+- AMQConfig.java
+- application.properties 
+
+```
+$mvn spring-boot:run 
+2020-05-01 15:55:34.643  INFO 95098 --- [           main] com.redhat.Application                   : Started Application in 4.905 seconds (JVM running for 10.031)
+2020-05-01 15:55:35.306  INFO 95098 --- [//producerTimer] Camel::AMQ::ProducerMessageProducer      : MESSAGE PRODUCER : 1 - Sending message - 421e9e19-a796-4898-9888-a75429cb93c0
+2020-05-01 15:55:35.344  INFO 95098 --- [//producerQueue] Camel::AMQ::ProducerQueueDepth           : producer-queue Queue Size: 0
+2020-05-01 15:55:35.344  INFO 95098 --- [//consumerQueue] Camel::AMQ::ConsumerQueueDepth           : consumer-queue Queue Size: 0
+2020-05-01 15:55:36.273  INFO 95098 --- [//producerQueue] Camel::AMQ::ProducerQueueDepth           : producer-queue Queue Size: 1
+2020-05-01 15:55:37.277  INFO 95098 --- [//producerQueue] Camel::AMQ::ProducerQueueDepth           : producer-queue Queue Size: 1
+
+```
+
+# IBM MQ / ActiveMQ Embedded / Spring Boot  / Apache Camel
+
+Example project using ActiveMQ Embedded, IBM MQ (Docker), Spring Boot and Apache camel.  It demonstrates reading (and writing) from an MX queue by emitting a message fews seconds and moving these message to an AMQ Queue. Transaction failure is simulated for all messages without the JMSRedelivered header, which is every messages consumed 1st time round. In the logs you will see the messages roll back to the WMQ when the failure happens. 
+
+To run the application it needs an instance of IBM MQ running locally. 
+I used the IBM provided docker image - https://hub.docker.com/r/ibmcom/mq/.
+
+## Running the Docker image
+
+To download the docker image...
+
+```
+docker pull ibmcom/mq
+```
+
+Full details for using the docker image can be found here->https://github.com/ibm-messaging/mq-docker
+
+**TL;DR**
+
+Run a default queue with all the defaults
+
+```
+docker run \
+  --env LICENSE=accept \
+  --env MQ_QMGR_NAME=QM1 \
+  --publish 1414:1414 \
+  --publish 9443:9443 \
+  --detach \
+  ibmcom/mq
+```
+
+Once started MQ Dev edition will be running with the following configuration
+* http://localhost:9443 - MQ Management console
+ 
+  Username : admin password: passw0rd
+  
+* Port 1414 - MQ listener
+
+All of the default settings are used for the demonstration application
+
+```
+$mvn spring-boot:run -Dfuse.wmq.jms.enabled=true
+```
