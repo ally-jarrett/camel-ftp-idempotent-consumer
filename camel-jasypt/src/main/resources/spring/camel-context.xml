@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <bean id="jasypt" class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+        <!-- use 'sysenv' for env var and 'sys' for jvm prop -->
+        <property name="password" value="sys:CAMEL_ENCRYPTION_PASSWORD"/>
+        <property name="algorithm" value="PBEWithMD5AndDES"/>
+    </bean>
+
+    <!-- Define a traditional camel context here -->
+    <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+
+<!--        &lt;!&ndash; define the camel properties placeholder, and let it leverage jasypt &ndash;&gt;-->
+<!--        <propertyPlaceholder id="encrypted-properties"-->
+<!--                             location="classpath:application.properties"-->
+<!--                             propertiesParserRef="jasypt"/>-->
+
+        <route id="Camel::XML::Timer::Hello-World::1s">
+            <from id="route-timer" uri="timer:foo?period=1000"/>
+<!--            {{my.encrypted.value}}-->
+            <log id="route-log" message="Hello World :: ${properties:my.encrypted.value}"/>
+        </route>
+    </camelContext>
+
+</beans>

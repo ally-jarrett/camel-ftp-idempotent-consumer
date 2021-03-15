@@ -9,8 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>camel-ftp-idempotent</artifactId>
-
+    <artifactId>camel-jasypt</artifactId>
     <dependencies>
 
         <!-- Spring-Boot -->
@@ -39,12 +38,6 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>io.hawt</groupId>
-            <artifactId>hawtio-springboot</artifactId>
-            <version>${version.hawtio.sb}</version>
-        </dependency>
-
         <!-- Swagger -->
         <dependency>
             <groupId>org.webjars</groupId>
@@ -63,8 +56,12 @@
             <artifactId>camel-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-ftp-starter</artifactId>
+            <artifactId>camel-jasypt</artifactId>
         </dependency>
 
         <!-- Utils -->
@@ -72,11 +69,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.ftpserver</groupId>
-            <artifactId>ftpserver-core</artifactId>
-            <version>1.1.1</version>
         </dependency>
 
         <!-- Test -->
@@ -177,4 +169,5 @@
             </repositories>
         </profile>
     </profiles>
+
 </project>

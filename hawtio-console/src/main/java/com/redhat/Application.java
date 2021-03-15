@@ -1,5 +1,6 @@
 package com.redhat;
 
+import io.hawt.web.auth.AuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

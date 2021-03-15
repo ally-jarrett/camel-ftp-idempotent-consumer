@@ -10,9 +10,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>camel-amq-wmq-ftp</module>
+        <module>camel-amq-wmq-jms</module>
         <module>hawtio-console</module>
         <module>camel-ftp-idempotent</module>
+        <module>camel-jasypt</module>
     </modules>
 
     <properties>
@@ -22,12 +23,9 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <!-- FUSE 7.6 -->
-        <!-- Fuse 7.5 <fuse.bom.version>7.5.0.fuse-750029-redhat-00002</fuse.bom.version> -->
-        <version.fuse.bom>7.6.0.fuse-sb2-760028-redhat-00001</version.fuse.bom>
-        <version.rhoar.bom>2.1.6.Final-redhat-00004</version.rhoar.bom>
-        <!-- Camel 7.5 <version.camel.bom>2.23.2.fuse-750029-redhat-00001</version.camel.bom> -->
-        <version.camel.bom>2.23.2.fuse-760030-redhat-00001</version.camel.bom>
+        <!-- FUSE 7.8 -->
+        <version.fuse.bom>7.8.0.fuse-sb2-780038-redhat-00001</version.fuse.bom>
+        <version.camel.bom>2.23.2.fuse-780036-redhat-00001</version.camel.bom>
         <version.hawtio.sb>2.10.0</version.hawtio.sb>
 
         <!-- Utils -->
@@ -41,31 +39,20 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- RHOAR -->
-            <dependency>
-                <groupId>me.snowdrop</groupId>
-                <artifactId>spring-boot-bom</artifactId>
-                <version>${version.rhoar.bom}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <dependency>
                 <groupId>org.jboss.redhat-fuse</groupId>
                 <artifactId>fuse-springboot-bom</artifactId>
-                <version>${version.fuse.bom}</version>
+                <version>7.8.0.fuse-sb2-780038-redhat-00001</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-parent</artifactId>
-                <version>${version.camel.bom}</version>
+                <version>2.23.2.fuse-780036-redhat-00001</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 

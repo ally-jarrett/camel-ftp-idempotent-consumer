@@ -16,7 +16,7 @@ import static com.redhat.example.config.AMQConfig.CONSUMER_QUEUE;
 
 @Slf4j
 @Component
-@ConditionalOnExpression("${fuse.wmq.jms.enabled} == true && ${fuse.amq.jms.enabled} == true")
+@ConditionalOnExpression("${fuse.wmq.jms.enabled} == true")
 public class WMQRoutes extends SpringRouteBuilder {
 
     @Override
@@ -55,12 +55,13 @@ public class WMQRoutes extends SpringRouteBuilder {
                 .throwException(new ConnectException("Cannot connect to Consumer Network"))
                 .end();
 
-        /****************************************************/
-        /*** JMS Routes :: Routes demonstrate TX Rollback ***/
-        /****************************************************/
+        /*************************************************************************/
+        /*** JMS Routes :: Routes demonstrate TX Rollback // Consumer/Producer ***/
+        /*************************************************************************/
 
-        // Producer Trusted Zone : Message Producer
+        // Producer Trusted Zone : Message Producer sends 100 msgs every 10 secs
         from("timer:producerTimer?period=10000").routeId("Camel::WMQ::MessageProducer")
+            .loop(100)
                 .process(new Processor() {
                     @Override
                     public void process(Exchange exchange) throws Exception {
@@ -69,8 +70,9 @@ public class WMQRoutes extends SpringRouteBuilder {
                         exchange.getIn().setBody(uuid);
                     }
                 })
-                .log(LoggingLevel.INFO, "MESSAGE PRODUCER : ${header.messageCounter} - Sending message - ${body}")
-                .to("wmq:queue:DEV.QUEUE.1");
+                .log(LoggingLevel.INFO, "MESSAGE PRODUCER : ${header.messageCounter} - SENDING message - ${body}")
+                .to("wmq-producer:queue:DEV.QUEUE.1")
+            .end();
 
         // Test WMQ RollBacks in isolation
 //        from("wmq:queue:DEV.QUEUE.1?transacted=true")
@@ -78,14 +80,14 @@ public class WMQRoutes extends SpringRouteBuilder {
 //                .throwException(new RuntimeException("Issues..."))
 //                .log(LoggingLevel.INFO, "Received IBM MQ Producers message - ${body}");
 
-        // DMZ Example Route : Delay Consumer for demo purposefs
-        from("wmq:queue:DEV.QUEUE.1?transacted=true")
-                .delay(10000)
-                .log(LoggingLevel.INFO, "Received IBM MQ Producer message - ${body}")
-                .to("amq:queue:" + CONSUMER_QUEUE);
+        // DMZ Example Route
+        from("wmq-consumer:queue:DEV.QUEUE.1?transacted=true")
+                //.delay(5000) // Set Delay to see Concurrent Consumers in action
+                .log(LoggingLevel.INFO, "MESSAGE CONSUMING : ${header.messageCounter} - RECEIVED message - ${body}");
+                //.to("amq:queue:" + CONSUMER_QUEUE);
 
         // Consumer Trusted Zone - Dequeue Messages
-        from("amq:queue:" + CONSUMER_QUEUE + "?transacted=true")
-                .log("Consumer Trusted Zone processing message - ${body}");
+//        from("amq:queue:" + CONSUMER_QUEUE + "?transacted=true")
+//                .log("Consumer Trusted Zone processing message - ${body}");
     }
 }
